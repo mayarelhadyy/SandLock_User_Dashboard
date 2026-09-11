@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b6d73" />
+  <meta name="color-scheme" content="light" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="SandLock" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="application-name" content="SandLock" />
+  <meta name="description" content="MindForge SandLock — reserve and access your smart beach locker." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png" />
+  <title>SandLock — Smart Beach Locker</title>
+  <link rel="stylesheet" href="styles.css?v=mobilefix-3" />
+</head>
+<body>
+  <div class="desktop-stage">
+    <div class="desktop-note">SandLock • Mobile App • Android + iPhone</div>
+    <main class="app-shell" id="appShell">
+
+      <!-- SCREEN 1: SPLASH -->
+      <section class="screen active splash-screen" data-screen="splash">
+        <div class="splash-glow"></div>
+        <div class="brand-lockup">
+          <img src="assets/mindforge-logo.png" class="brand-logo" alt="MindForge Smart Beach Locker" />
+        </div>
+        <p class="eyebrow">SMART BEACH LOCKER</p>
+        <h1>Your belongings, secured.<br><span>Your beach, uninterrupted.</span></h1>
+        <div class="feature-row">
+          <div class="feature-pill"><span>▣</span> Secure</div>
+          <div class="feature-pill"><span>◷</span> Reserve</div>
+          <div class="feature-pill"><span>⌁</span> Mobile Access</div>
+        </div>
+        <div class="splash-actions">
+          <button class="btn btn-primary" data-go="login">Get Started <span>→</span></button>
+          <button class="btn btn-ghost" data-go="login">Log In / Sign Up</button>
+        </div>
+        <p class="micro-copy">Reserve • Store • Enjoy</p>
+      </section>
+
+      <!-- SCREEN 2: LOGIN -->
+      <section class="screen" data-screen="login">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="splash" aria-label="Back">←</button>
+          <div class="mini-brand"><img src="assets/mindforge-logo.png" alt="MindForge"></div>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content login-content">
+          <div class="section-intro">
+            <span class="section-kicker">WELCOME TO SANDLOCK</span>
+            <h2>Set up your beach access</h2>
+            <p>Enter your details once. Your profile will be ready for future reservations.</p>
+          </div>
+
+          <form id="loginForm" class="card form-card" novalidate>
+            <label class="field">
+              <span>Full name</span>
+              <input id="fullName" autocomplete="name" placeholder="e.g. Mohamed Ahmed" required />
+            </label>
+            <label class="field">
+              <span>Mobile number</span>
+              <div class="input-prefix"><b>+20</b><input id="mobile" inputmode="tel" autocomplete="tel" placeholder="10xxxxxxxx" maxlength="11" required></div>
+            </label>
+            <label class="field">
+              <span>Card number <small>Demo payment method</small></span>
+              <input id="cardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456" maxlength="19" required />
+              <em>For the prototype, only the last 4 digits are saved.</em>
+            </label>
+            <div id="loginError" class="form-error" role="alert"></div>
+            <button class="btn btn-primary full" type="submit">Continue to Lockers <span>→</span></button>
+          </form>
+
+          <div class="trust-strip">
+            <span>🔒 Secure profile</span><span>✦ Fast booking</span><span>✓ Editable later</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: MAP -->
+      <section class="screen" data-screen="map">
+        <header class="topbar">
+          <button class="icon-btn menu-btn" aria-label="Menu">☰</button>
+          <div class="wordmark"><img src="assets/mindforge-logo.png" alt="MindForge"></div>
+          <button class="icon-btn" aria-label="Notifications">♢</button>
+        </header>
+
+        <div class="content map-content">
+          <div id="rulesFirstNotice" class="rules-first-notice card" hidden>
+            <div class="rules-first-icon">🛡</div>
+            <div class="rules-first-copy"><strong>Before your first booking</strong><p>Please review <b>Rules & Guidelines</b> to understand timing, PIN privacy, late fees, and locker responsibility.</p></div>
+            <div class="rules-first-actions"><button id="reviewRulesNow" class="btn btn-primary compact" type="button">Review Rules</button><button id="dismissRulesNotice" class="text-link" type="button">Got it</button></div>
+          </div>
+          <div class="map-toolbar">
+            <button class="zone-chip">⌖ <span>Beach Zone 1</span>⌄</button>
+            <div class="toolbar-actions"><button class="square-btn">▽</button><button class="square-btn">⌕</button></div>
+          </div>
+
+          <div class="map-card" id="mapCard">
+            <div class="map-visual">
+              <img src="assets/beach-map-dynamic.png" alt="Beach Zone 1 lockers map" class="map-image" />
+              <button class="map-hit hit-a" data-locker="A" data-status="offline" aria-label="Locker A"><img src="assets/locker-map.png" class="map-locker-thumb" alt="" aria-hidden="true"><span>A</span></button>
+              <button class="map-hit hit-b" data-locker="B" data-status="offline" aria-label="Locker B"><img src="assets/locker-map.png" class="map-locker-thumb" alt="" aria-hidden="true"><span>B</span></button>
+              <button class="map-hit hit-c" data-locker="C" data-status="offline" aria-label="Locker C"><img src="assets/locker-map.png" class="map-locker-thumb" alt="" aria-hidden="true"><span>C</span></button>
+              <button class="map-hit hit-d" data-locker="D" data-status="offline" aria-label="Locker D"><img src="assets/locker-map.png" class="map-locker-thumb" alt="" aria-hidden="true"><span>D</span></button>
+              <button class="map-hit hit-e" data-locker="E" data-status="offline" aria-label="Locker E"><img src="assets/locker-map.png" class="map-locker-thumb" alt="" aria-hidden="true"><span>E</span></button>
+              <button class="map-hit hit-f" data-locker="F" data-status="offline" aria-label="Locker F"><img src="assets/locker-map.png" class="map-locker-thumb" alt="" aria-hidden="true"><span>F</span></button>
+            </div>
+
+            <div class="legend-card">
+              <strong>Locker Status</strong>
+              <div class="legend-grid">
+                <span><i class="dot available"></i>Available</span>
+                <span><i class="dot reserved"></i>Reserved</span>
+                <span><i class="dot occupied"></i>Occupied</span>
+                <span><i class="dot offline"></i>Offline</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card find-card">
+            <div class="round-icon">⌖</div>
+            <div><strong>Find Available Lockers</strong><p>Tap any locker pin to view details and reserve.</p></div>
+            <button class="btn btn-primary compact" id="findFirstAvailable">Find Now</button>
+          </div>
+        </div>
+
+        <nav class="bottom-nav">
+          <button class="active">⌂<span>Home</span></button>
+          <button data-go="my-reservations">▣<span>Reservations</span></button>
+          <button disabled>▦<span>Scan</span></button>
+          <button data-go="profile">○<span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- SCREEN 4: LOCKER DETAILS -->
+      <section class="screen" data-screen="details">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="map">←</button>
+          <strong id="detailsTitle">Locker A</strong>
+          <button class="icon-btn">☆</button>
+        </header>
+        <div class="content details-content">
+          <div class="locker-hero card">
+            <img src="assets/locker-concept.png" alt="SandLock locker concept" />
+            <span class="status-badge available" id="detailsStatus">Available</span>
+          </div>
+
+          <div class="details-heading">
+            <div><span class="section-kicker">BEACH ZONE 1</span><h2 id="lockerName">Locker A</h2></div>
+            <div class="battery-chip">⚡ <span id="batteryText">100%</span></div>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-box"><span>Location</span><strong id="locationText">Beach Zone 1</strong></div>
+            <div class="info-box"><span>Price</span><strong><b id="rateText">20</b> EGP/hr</strong></div>
+            <div class="info-box wide"><span>About this locker</span><strong id="noteText">Near the main entrance and first umbrella row.</strong></div>
+          </div>
+
+          <div class="card feature-list">
+            <div><span class="round-mini">⌕</span><p><strong>Live status</strong><small>Availability updates in real time.</small></p></div>
+            <div><span class="round-mini">▣</span><p><strong>PIN + mobile access</strong><small>Reservation credentials are time-limited.</small></p></div>
+            <div><span class="round-mini">◉</span><p><strong>Door monitoring</strong><small>Open / closed status is tracked.</small></p></div>
+          </div>
+        </div>
+        <div class="sticky-action"><button id="reserveNow" class="btn btn-primary full">Reserve Now</button></div>
+      </section>
+
+      <!-- SCREEN 5: RESERVATION -->
+      <section class="screen" data-screen="reservation">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="details">←</button>
+          <strong id="reservationTitle">Reserve Locker A</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content reservation-content">
+          <div class="section-intro compact-intro">
+            <span class="section-kicker">RESERVATION</span>
+            <h2>Choose your time</h2>
+            <p>Your total updates automatically based on the booking duration.</p>
+          </div>
+
+          <div class="card reservation-card">
+            <label class="field">
+              <span>Select date</span>
+              <input type="date" id="bookingDate" />
+            </label>
+            <div class="two-col">
+              <label class="field"><span>From</span><input type="time" id="startTime" step="60" /></label>
+              <label class="field"><span>To</span><input type="time" id="endTime" step="60" /></label>
+            </div>
+            <div class="price-breakdown">
+              <div><span>Duration</span><strong id="durationText">2 hours</strong></div>
+              <div><span>Hourly rate</span><strong><span id="hourlyText">20</span> EGP</strong></div>
+              <hr />
+              <div class="total-line"><span>Total Price</span><strong><span id="totalPrice">40</span> EGP</strong></div>
+            </div>
+            <div id="reservationError" class="form-error"></div>
+          </div>
+
+          <div class="booking-note">◷ <span>The locker will be assigned to you only during the selected time window.</span></div>
+        </div>
+        <div class="sticky-action"><button id="continueBooking" class="btn btn-primary full">Continue <span>→</span></button></div>
+      </section>
+
+
+      <!-- SCREEN 6: PRICE SUMMARY + USER PIN -->
+      <section class="screen" data-screen="summary">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="reservation" aria-label="Back">←</button>
+          <strong>Review Reservation</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content summary-content">
+          <div class="section-intro compact-intro">
+            <span class="section-kicker">FINAL CHECK</span>
+            <h2>Review & secure your locker</h2>
+            <p>Confirm the booking details and create the 4-digit PIN you will use during this reservation.</p>
+          </div>
+
+          <div class="card booking-summary-card">
+            <div class="summary-locker-row">
+              <img src="assets/locker-closed.png" alt="SandLock locker" />
+              <div><span class="section-kicker">BEACH ZONE 1</span><h3 id="summaryLocker">Locker A</h3><p id="summaryLocation">Near the main entrance.</p></div>
+              <span class="status-badge-inline reserved">Pending</span>
+            </div>
+            <div class="summary-grid">
+              <div><span>Date</span><strong id="summaryDate">—</strong></div>
+              <div><span>Time</span><strong id="summaryTime">—</strong></div>
+              <div><span>Duration</span><strong id="summaryDuration">—</strong></div>
+              <div><span>Rate</span><strong id="summaryRate">—</strong></div>
+            </div>
+            <div class="summary-total"><span>Total</span><strong><b id="summaryTotal">—</b> EGP</strong></div>
+          </div>
+
+          <div class="card pin-create-card">
+            <div class="pin-card-head"><div class="round-mini">⌨</div><div><strong>Create reservation PIN</strong><p>This PIN is for your booking only and expires when the reservation ends.</p></div></div>
+            <label class="field pin-field">
+              <span>4-digit PIN</span>
+              <input id="bookingPin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" />
+            </label>
+            <label class="field pin-field">
+              <span>Confirm PIN</span>
+              <input id="bookingPinConfirm" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" />
+            </label>
+            <div id="pinError" class="form-error"></div>
+            <div class="security-note">🔒 Keep this PIN private. You can view it again from your active reservation.</div>
+          </div>
+
+          <div class="card payment-mini-card">
+            <div><span>Payment method</span><strong id="summaryPayment">•••• •••• •••• ----</strong></div>
+            <span class="payment-demo-badge">Demo</span>
+          </div>
+        </div>
+        <div class="sticky-action"><button id="confirmReservation" class="btn btn-primary full">Confirm Reservation <span>→</span></button></div>
+      </section>
+
+      <!-- SCREEN 7: CONFIRMATION -->
+      <section class="screen" data-screen="confirmation">
+        <header class="topbar simple">
+          <span class="topbar-spacer"></span>
+          <div class="mini-brand"><img src="assets/mindforge-logo.png" alt="MindForge"></div>
+          <button class="icon-btn" data-go="map" aria-label="Close">×</button>
+        </header>
+        <div class="content confirmation-content">
+          <div class="success-mark">✓</div>
+          <span class="section-kicker">RESERVATION CONFIRMED</span>
+          <h2>Your SandLock is ready.</h2>
+          <p class="center-muted">Your locker is reserved for the selected time window.</p>
+
+          <div class="card confirmed-card">
+            <div class="confirmed-top"><div><span>Locker</span><strong id="confirmedLocker">Locker A</strong></div><span class="status-badge-inline reserved">Reserved</span></div>
+            <div class="confirm-details">
+              <div><span>Date</span><strong id="confirmedDate">—</strong></div>
+              <div><span>Time</span><strong id="confirmedTime">—</strong></div>
+              <div><span>Total</span><strong id="confirmedTotal">—</strong></div>
+            </div>
+            <div class="pin-display-wrap">
+              <span>Your reservation PIN</span>
+              <div class="pin-display"><strong id="confirmedPin">••••</strong><button id="copyPin" class="copy-btn" type="button">Copy</button></div>
+              <small>Use this PIN on the locker keypad during your active reservation.</small>
+            </div>
+          </div>
+
+          <div class="booking-note reminder-note">🔔 <span>SandLock will remind you <b>15 minutes before your booking ends</b>. Overtime is charged at <b>3× the normal hourly rate</b> until the session is ended.</span></div>
+
+          <div class="confirmation-actions">
+            <button class="btn btn-primary full" data-go="my-reservations">View My Reservation</button>
+            <button class="btn btn-ghost full" data-go="map">Back to Map</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 8: MY RESERVATIONS -->
+      <section class="screen" data-screen="my-reservations">
+        <header class="topbar">
+          <button class="icon-btn menu-btn" aria-label="Menu">☰</button>
+          <strong>My Reservations</strong>
+          <button class="icon-btn" aria-label="Notifications">♢</button>
+        </header>
+        <div class="content reservations-content">
+          <div class="tabs"><button class="active">Upcoming</button><button data-go="history">History</button></div>
+          <div id="reservationsList" class="reservations-list"></div>
+          <div id="reservationsEmpty" class="card empty-state">
+            <div class="empty-icon">▣</div><h3>No upcoming reservations</h3><p>Reserve an available SandLock from the beach map.</p>
+            <button class="btn btn-primary compact" data-go="map">Find a Locker</button>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button data-go="map">⌂<span>Home</span></button>
+          <button class="active">▣<span>Reservations</span></button>
+          <button disabled>▦<span>Scan</span></button>
+          <button data-go="profile">○<span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- SCREEN 9: LIVE LOCKER STATUS -->
+      <section class="screen" data-screen="live-status">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="my-reservations" aria-label="Back">←</button>
+          <strong id="liveTitle">Locker A</strong>
+          <button class="icon-btn">☆</button>
+        </header>
+        <div class="content live-content">
+          <div class="live-hero card">
+            <img src="assets/locker-closed.png" alt="Active SandLock locker" />
+            <div class="live-status-badge" id="liveDeviceBadge"><i></i><span>Live • Waiting for ESP32</span></div>
+          </div>
+          <div class="live-heading"><div><span class="section-kicker">ACTIVE RESERVATION</span><h2 id="liveLockerName">Locker A</h2></div><span id="liveReservationPhaseBadge" class="status-badge-inline reserved">Reserved</span></div>
+
+          <div class="status-metrics">
+            <div class="metric-card"><span>Battery</span><strong id="liveBattery">100%</strong><i class="metric-good">Healthy</i></div>
+            <div class="metric-card"><span>Door</span><strong id="liveDoor">Closed</strong><i>Sensor online</i></div>
+            <div class="metric-card"><span>Connection</span><strong id="liveConnection">Online</strong><i class="metric-good">MQTT ready</i></div>
+          </div>
+
+          <div class="card active-booking-card">
+            <div><span>Date</span><strong id="liveDate">—</strong></div>
+            <div><span>Booking time</span><strong id="liveTime">—</strong></div>
+            <div><span>Your PIN</span><strong class="mono" id="livePin">••••</strong></div>
+            <div><span>Base paid amount</span><strong id="liveTotal">—</strong></div>
+          </div>
+
+          <div id="timeComplianceCard" class="card compliance-card">
+            <div class="compliance-main"><span class="section-kicker">TIME COMPLIANCE</span><strong id="liveScheduleState">Upcoming</strong><p id="liveCountdown">Your reservation timing will appear here.</p></div>
+            <div class="compliance-fees">
+              <div><span>Late-use rate</span><strong id="liveLateRate">—</strong></div>
+              <div><span>Current late fee</span><strong id="liveLateFee">0 EGP</strong></div>
+              <div class="final-estimate"><span>Current total</span><strong id="liveFinalEstimate">—</strong></div>
+            </div>
+          </div>
+
+          <div class="live-actions">
+            <button class="btn btn-primary full" data-go="unlock-options">Open Locker</button>
+            <button id="cancelLiveReservation" class="btn btn-danger-outline full" type="button">Cancel Reservation</button>
+            <button class="btn btn-ghost full" data-go="map">View on Map</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 10: UNLOCK OPTIONS -->
+      <section class="screen" data-screen="unlock-options">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="live-status" aria-label="Back">←</button>
+          <strong>Unlock Options</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content unlock-content">
+          <div class="section-intro compact-intro">
+            <span class="section-kicker">LOCKER ACCESS</span>
+            <h2>How would you like to unlock?</h2>
+            <p>Both options use your active reservation. Choose the one that is most convenient.</p>
+          </div>
+
+          <button id="mobileUnlockOption" class="access-option card" type="button">
+            <div class="access-icon phone-icon">▯</div>
+            <div><strong>Open with Mobile</strong><p>Send a secure unlock command from the app through the SandLock IoT connection.</p><span>Recommended when your phone is with you</span></div>
+            <b>→</b>
+          </button>
+
+          <button id="pinUnlockOption" class="access-option card" type="button">
+            <div class="access-icon">⌨</div>
+            <div><strong>Enter Reservation PIN</strong><p>Use the 4-digit PIN created for this reservation.</p><span>Useful when you prefer keypad access</span></div>
+            <b>→</b>
+          </button>
+
+          <div class="card access-security-card">
+            <div>🛡</div><p><strong>Secure reservation access</strong><br><span>Access is available only while the reservation is active. Unlock activity will be recorded in the final connected version.</span></p>
+          </div>
+
+          <div class="mqtt-ready-strip"><span class="pulse-dot"></span><div><strong>HiveMQ secure channel enabled</strong><small>Remote unlock is published to the connected SandLock through MQTT over secure WebSocket.</small></div></div>
+        </div>
+      </section>
+
+
+      <!-- SCREEN 11: PIN ENTRY -->
+      <section class="screen" data-screen="pin-entry">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="unlock-options" aria-label="Back">←</button>
+          <strong>Enter Reservation PIN</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content pin-entry-content">
+          <div class="pin-locker-chip"><span class="pulse-dot"></span><strong id="pinLockerLabel">Locker A</strong><small>Active reservation</small></div>
+          <div class="pin-entry-head">
+            <div class="pin-lock-icon">⌨</div>
+            <span class="section-kicker">SECURE ACCESS</span>
+            <h2>Enter your 4-digit PIN</h2>
+            <p>Use the reservation PIN you created when booking this SandLock.</p>
+          </div>
+          <div class="pin-dots" id="pinDots" aria-label="PIN entered"><i></i><i></i><i></i><i></i></div>
+          <div id="pinEntryError" class="pin-entry-error" role="alert"></div>
+          <div class="number-pad" id="numberPad">
+            <button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
+            <button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
+            <button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
+            <button type="button" class="pad-secondary" id="pinClear">C</button><button type="button" data-digit="0">0</button><button type="button" class="pad-secondary" id="pinBackspace">⌫</button>
+          </div>
+          <button id="verifyPin" class="btn btn-primary full pin-verify-btn" type="button" disabled>Unlock Locker <span>→</span></button>
+          <button id="showReservationPin" class="text-link" type="button">Forgot your reservation PIN?</button>
+          <div class="card access-security-card pin-security-note"><div>🛡</div><p><strong>Your emergency master PIN is never shown here.</strong><br><span>This screen accepts only the temporary PIN linked to the active reservation.</span></p></div>
+        </div>
+      </section>
+
+      <!-- SCREEN 12: UNLOCKING -->
+      <section class="screen" data-screen="unlocking">
+        <header class="topbar simple unlocking-topbar">
+          <span class="topbar-spacer"></span>
+          <div class="mini-brand"><img src="assets/mindforge-logo.png" alt="MindForge"></div>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content unlocking-content">
+          <div class="unlock-orbit" aria-hidden="true"><span class="orbit-ring"></span><span class="unlock-lock">🔒</span></div>
+          <span class="section-kicker">SECURE IOT COMMAND</span>
+          <h2 id="unlockingTitle">Opening Locker A…</h2>
+          <p id="unlockingMessage">Connecting to your SandLock and sending the unlock request.</p>
+          <div class="unlock-progress card">
+            <div class="unlock-step active" id="unlockStep1"><i>1</i><div><strong>Validate reservation</strong><small>Checking active booking credentials.</small></div><b>✓</b></div>
+            <div class="unlock-step" id="unlockStep2"><i>2</i><div><strong>Send unlock command</strong><small id="unlockTransport">Preparing HiveMQ / MQTT channel.</small></div><b>•</b></div>
+            <div class="unlock-step" id="unlockStep3"><i>3</i><div><strong>Confirm locker response</strong><small>Waiting for the device status update.</small></div><b>•</b></div>
+          </div>
+          <div class="mqtt-live-card"><span class="pulse-dot"></span><div><strong id="unlockConnectionLabel">Secure connection ready</strong><small id="unlockTopicLabel">SandLock IoT access channel</small></div></div>
+          <p class="unlocking-footnote">Keep this screen open for a moment. The locker status will update automatically.</p>
+        </div>
+      </section>
+
+      <!-- SCREEN 13: UNLOCK SUCCESS -->
+      <section class="screen" data-screen="unlock-success">
+        <header class="topbar simple">
+          <span class="topbar-spacer"></span>
+          <div class="mini-brand"><img src="assets/mindforge-logo.png" alt="MindForge"></div>
+          <button class="icon-btn" data-go="live-status" aria-label="Close">×</button>
+        </header>
+        <div class="content unlock-success-content">
+          <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="success-mark unlock-success-mark">✓</div>
+          <span class="section-kicker">ACCESS GRANTED</span>
+          <h2>Unlocked successfully!</h2>
+          <p class="center-muted">Enjoy your beach time. Your SandLock is ready to use.</p>
+          <div class="card unlock-success-card">
+            <div class="success-locker-visual"><img src="assets/locker-closed.png" alt="SandLock locker"><span class="open-status-pill">● Door unlocked</span></div>
+            <div class="success-detail-row"><span>Locker</span><strong id="successLocker">Locker A</strong></div>
+            <div class="success-detail-row"><span>Access method</span><strong id="successMethod">Mobile</strong></div>
+            <div class="success-detail-row"><span>Access time</span><strong id="successTime">—</strong></div>
+          </div>
+          <div class="door-reminder">⚠ <span>Remember to close the locker door securely when you are done.</span></div>
+          <div class="success-actions">
+            <button class="btn btn-primary full" data-go="live-status">View Locker Status</button>
+            <button id="endSession" class="btn btn-ghost full" type="button">End Reservation & Close Session</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 14: RESERVATION HISTORY -->
+      <section class="screen" data-screen="history">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="my-reservations" aria-label="Back">←</button>
+          <strong>Reservation History</strong>
+          <button class="icon-btn" data-go="profile" aria-label="Profile">○</button>
+        </header>
+        <div class="content history-content">
+          <div class="section-intro compact-intro history-intro">
+            <span class="section-kicker">YOUR ACTIVITY</span>
+            <h2>Past SandLock sessions</h2>
+            <p>Review completed reservations, booking times, and access details.</p>
+          </div>
+          <div class="history-stats">
+            <div class="history-stat"><span>Total sessions</span><strong id="historyCount">0</strong></div>
+            <div class="history-stat"><span>Total hours</span><strong id="historyHours">0</strong></div>
+            <div class="history-stat"><span>Total spent</span><strong><b id="historySpent">0</b> EGP</strong></div>
+          </div>
+          <div id="historyList" class="history-list"></div>
+          <div id="historyEmpty" class="card empty-state history-empty">
+            <div class="empty-icon">◷</div><h3>No history yet</h3><p>Completed reservations will appear here after you end a SandLock session.</p>
+            <button class="btn btn-primary compact" data-go="my-reservations">View Active Reservations</button>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button data-go="map">⌂<span>Home</span></button>
+          <button class="active" data-go="my-reservations">▣<span>Reservations</span></button>
+          <button disabled>▦<span>Scan</span></button>
+          <button data-go="profile">○<span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- SCREEN 15: PROFILE & SETTINGS -->
+      <section class="screen" data-screen="profile">
+        <header class="topbar">
+          <button class="icon-btn menu-btn" aria-label="Menu">☰</button>
+          <strong>Profile & Settings</strong>
+          <button class="icon-btn" aria-label="Notifications">♢</button>
+        </header>
+        <div class="content profile-content">
+          <div class="profile-hero card">
+            <div class="profile-avatar" id="profileAvatar">MA</div>
+            <div class="profile-main"><span class="section-kicker">SANDLOCK MEMBER</span><h2 id="profileName">Mohamed Ahmed</h2><p id="profilePhone">+20 10xxxxxxxx</p></div>
+            <button id="toggleProfileEdit" class="edit-chip" type="button">Edit</button>
+          </div>
+
+          <div id="profileEditPanel" class="card profile-edit-panel" hidden>
+            <label class="field"><span>Full name</span><input id="profileNameInput" autocomplete="name"></label>
+            <label class="field"><span>Mobile number</span><div class="input-prefix"><b>+20</b><input id="profilePhoneInput" inputmode="tel" maxlength="11"></div></label>
+            <label class="field"><span>Replace payment card <small>Optional</small></span><input id="profileCardInput" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456"><em>Only the last 4 digits will be saved.</em></label>
+            <div id="profileError" class="form-error"></div>
+            <button id="saveProfile" class="btn btn-primary full" type="button">Save Changes</button>
+          </div>
+
+          <div class="card payment-settings-card">
+            <div class="payment-card-icon">▣</div>
+            <div class="payment-card-copy"><span>Saved payment method</span><strong id="profilePayment">No card saved</strong><small>Only the last four digits are stored in this prototype.</small></div>
+            <button class="small-danger-btn" type="button" data-go="payment-method">Manage</button>
+          </div>
+
+          <div class="settings-group">
+            <span class="settings-label">ACCOUNT & BOOKING</span>
+            <button class="settings-row card" data-go="my-reservations"><i>▣</i><div><strong>My Reservations</strong><small>View upcoming and active bookings.</small></div><b>›</b></button>
+            <button class="settings-row card" data-go="history"><i>◷</i><div><strong>Reservation History</strong><small>Review completed SandLock sessions.</small></div><b>›</b></button>
+            <button class="settings-row card" data-go="payment-method"><i>▣</i><div><strong>Payment Method</strong><small>Add, replace, or remove your saved demo card.</small></div><b>›</b></button>
+            <button class="settings-row card" data-go="rules"><i>🛡</i><div><strong>Rules & Guidelines</strong><small>Review reservation, access, and safety rules.</small></div><b>›</b></button>
+            <button id="notificationSettings" class="settings-row card" type="button"><i>🔔</i><div><strong>Reservation reminders</strong><small id="notificationProfileState">Tap to enable 15-minute notifications.</small></div><b>›</b></button>
+            <button class="settings-row card" data-go="support"><i>◉</i><div><strong>Help & Support</strong><small>FAQs and a prototype support request form.</small></div><b>›</b></button>
+            <button class="settings-row card" data-go="feedback"><i>★</i><div><strong>Rate SandLock</strong><small>Share feedback from your latest locker session.</small></div><b>›</b></button>
+          </div>
+          <button id="logoutButton" class="btn btn-ghost full logout-button" type="button">Sign Out</button>
+          <p class="profile-privacy">Your full card number is never stored by this prototype.</p>
+        </div>
+        <nav class="bottom-nav">
+          <button data-go="map">⌂<span>Home</span></button>
+          <button data-go="my-reservations">▣<span>Reservations</span></button>
+          <button disabled>▦<span>Scan</span></button>
+          <button class="active">○<span>Profile</span></button>
+        </nav>
+      </section>
+
+
+      <!-- SCREEN 16: PAYMENT METHOD -->
+      <section class="screen" data-screen="payment-method">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="profile" aria-label="Back">←</button>
+          <strong>Payment Method</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content payment-method-content">
+          <div class="section-intro compact-intro">
+            <span class="section-kicker">DEMO CHECKOUT</span>
+            <h2>Manage your payment card</h2>
+            <p>Use any 16-digit number for the prototype. Only the last four digits are stored on this device.</p>
+          </div>
+
+          <div class="demo-bank-card" aria-label="Saved demo card">
+            <div class="demo-card-top"><span class="demo-chip"></span><span>SANDLOCK</span></div>
+            <div class="demo-card-number" id="paymentCardDisplay">•••• •••• •••• ----</div>
+            <div class="demo-card-bottom"><span>DEMO PAYMENT</span><strong id="paymentCardHolder">MOHAMED AHMED</strong></div>
+          </div>
+
+          <div class="card payment-security-note">
+            <div class="security-badge">🔒</div>
+            <div><strong>Prototype privacy</strong><p>SandLock does not store the full card number. A real deployment should use a certified payment gateway and tokenized payment method.</p></div>
+          </div>
+
+          <div class="card payment-form-card">
+            <label class="field">
+              <span>Add / replace card</span>
+              <input id="paymentCardInput" inputmode="numeric" autocomplete="off" maxlength="19" placeholder="1234 5678 9012 3456" />
+              <em>Exactly 16 digits • demo only</em>
+            </label>
+            <div id="paymentMethodError" class="form-error"></div>
+            <button id="savePaymentMethod" class="btn btn-primary full" type="button">Save Payment Method</button>
+            <button id="deletePaymentMethod" class="btn btn-danger-soft full" type="button">Remove Saved Card</button>
+          </div>
+
+          <div class="payment-benefits">
+            <div class="mini-stat"><i>✓</i><span><strong>Fast booking</strong><small>Reuse your saved demo method.</small></span></div>
+            <div class="mini-stat"><i>••••</i><span><strong>Masked display</strong><small>Only last 4 digits appear.</small></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 17: RULES & GUIDELINES -->
+      <section class="screen" data-screen="rules">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="profile" aria-label="Back">←</button>
+          <strong>Rules & Guidelines</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content rules-content">
+          <div class="rules-hero">
+            <div class="rules-shield">✓</div>
+            <div><span class="section-kicker">SANDLOCK USER POLICY</span><h2>Safe. Fair. Reliable.</h2><p>Please follow these rules for a smooth beach-locker experience.</p></div>
+          </div>
+
+          <div class="rules-grid">
+            <article class="rule-card"><b>01</b><div><strong>One user — one locker</strong><p>Each active account may reserve one locker at a time.</p></div></article>
+            <article class="rule-card"><b>02</b><div><strong>Your locker, your responsibility</strong><p>Use only the SandLock assigned to your reservation.</p></div></article>
+            <article class="rule-card"><b>03</b><div><strong>Respect your time</strong><p>Use the locker only during the selected reservation window.</p></div></article>
+            <article class="rule-card"><b>04</b><div><strong>Keep your PIN private</strong><p>Do not share your temporary reservation PIN.</p></div></article>
+            <article class="rule-card"><b>05</b><div><strong>15-minute reminder</strong><p>You receive a notification 15 minutes before your reservation ends when notifications are permitted.</p></div></article>
+            <article class="rule-card"><b>06</b><div><strong>Late fees apply</strong><p>Any overtime is charged at 3× the locker's normal hourly rate until you end the session.</p></div></article>
+            <article class="rule-card"><b>07</b><div><strong>Payment & fees</strong><p>Pricing is calculated from your selected duration and locker rate.</p></div></article>
+            <article class="rule-card danger"><b>08</b><div><strong>Damage policy</strong><p>You are responsible for confirmed damage. Repair or replacement costs may be charged to your account.</p></div></article>
+            <article class="rule-card danger"><b>09</b><div><strong>Prohibited items</strong><p>Do not store illegal, hazardous, living, or odor-producing items.</p></div></article>
+            <article class="rule-card"><b>10</b><div><strong>Internet & device access</strong><p>Remote unlock requires an active app connection. Your reservation PIN remains the backup user-access method.</p></div></article>
+            <article class="rule-card"><b>11</b><div><strong>Remote unlock</strong><p>Use mobile unlock only for your own active reservation.</p></div></article>
+            <article class="rule-card"><b>12</b><div><strong>Cancellation policy</strong><p>Cancellation terms and refund rules are defined by the beach operator.</p></div></article>
+            <article class="rule-card danger"><b>13</b><div><strong>Misuse consequences</strong><p>Fraud, tampering, or repeated misuse may result in account suspension.</p></div></article>
+            <article class="rule-card"><b>14</b><div><strong>Safety & security</strong><p>Always close the door after use and verify the locker is secured.</p></div></article>
+            <article class="rule-card"><b>15</b><div><strong>Need help?</strong><p>Use Help & Support from your profile if you experience a problem.</p></div></article>
+          </div>
+
+          <div class="rules-footer card"><span>🛡</span><div><strong>Thank you for respecting SandLock</strong><p>Secure • Reliable • User friendly • Beach ready</p></div></div>
+        </div>
+      </section>
+
+      <!-- SCREEN 18: HELP & SUPPORT -->
+      <section class="screen" data-screen="support">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="profile" aria-label="Back">←</button>
+          <strong>Help & Support</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content support-content">
+          <div class="support-hero">
+            <div class="support-headset">◉</div>
+            <span class="section-kicker">WE'RE HERE TO HELP</span>
+            <h2>What can we help with?</h2>
+            <p>Quick answers for common SandLock issues, plus a prototype support request form.</p>
+          </div>
+
+          <div class="faq-list">
+            <details class="card faq-item" open><summary>My mobile unlock is not working</summary><p>Check your active reservation and internet connection, then use your reservation PIN on the keypad as the user backup method.</p></details>
+            <details class="card faq-item"><summary>I forgot my reservation PIN</summary><p>Open My Reservations → Live Status to view the PIN linked to your active booking.</p></details>
+            <details class="card faq-item"><summary>The locker appears offline</summary><p>Do not repeatedly force the lock. Use the support request below and include the locker ID.</p></details>
+            <details class="card faq-item"><summary>The door will not close</summary><p>Check that no belongings obstruct the door, close it gently, and verify the live door status.</p></details>
+          </div>
+
+          <form id="supportForm" class="card support-form" novalidate>
+            <div class="support-form-title"><div class="round-mini">?</div><div><strong>Send a support request</strong><small>Prototype requests are stored locally for demonstration.</small></div></div>
+            <label class="field"><span>Issue category</span><select id="supportCategory"><option>Locker access</option><option>Reservation</option><option>Payment</option><option>Locker offline</option><option>Door / hardware</option><option>Other</option></select></label>
+            <label class="field"><span>Locker ID <small>Optional</small></span><input id="supportLocker" maxlength="4" placeholder="e.g. A" /></label>
+            <label class="field"><span>Describe the issue</span><textarea id="supportMessage" rows="4" maxlength="400" placeholder="Tell us what happened…"></textarea></label>
+            <div id="supportError" class="form-error"></div>
+            <button class="btn btn-primary full" type="submit">Submit Support Request</button>
+          </form>
+
+          <div class="card support-status" id="supportStatus" hidden><span>✓</span><div><strong>Request saved</strong><p>Your prototype support ticket has been stored on this device.</p></div></div>
+        </div>
+      </section>
+
+      <!-- SCREEN 19: RATING & FEEDBACK -->
+      <section class="screen" data-screen="feedback">
+        <header class="topbar simple">
+          <button class="icon-btn" data-go="profile" aria-label="Back">←</button>
+          <strong>Rate Your Experience</strong>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="content feedback-content">
+          <div class="feedback-hero">
+            <div class="feedback-sun">★</div>
+            <span class="section-kicker">SANDLOCK EXPERIENCE</span>
+            <h2>How was your locker session?</h2>
+            <p>Your feedback helps us improve the service and the final competition prototype.</p>
+          </div>
+
+          <div class="card feedback-card">
+            <div class="feedback-booking" id="feedbackBookingSummary"><span>Latest session</span><strong>No completed reservation yet</strong></div>
+            <div class="star-rating" id="starRating" aria-label="Rate from 1 to 5">
+              <button type="button" data-rating="1" aria-label="1 star">★</button>
+              <button type="button" data-rating="2" aria-label="2 stars">★</button>
+              <button type="button" data-rating="3" aria-label="3 stars">★</button>
+              <button type="button" data-rating="4" aria-label="4 stars">★</button>
+              <button type="button" data-rating="5" aria-label="5 stars">★</button>
+            </div>
+            <div class="rating-label" id="ratingLabel">Tap a star to rate your experience</div>
+            <label class="field"><span>Comment <small>Optional</small></span><textarea id="feedbackComment" rows="4" maxlength="300" placeholder="What did you like? What should we improve?"></textarea></label>
+            <div id="feedbackError" class="form-error"></div>
+            <button id="submitFeedback" class="btn btn-primary full" type="button">Submit Feedback</button>
+            <button class="btn btn-ghost full" data-go="map" type="button">Skip for Now</button>
+          </div>
+
+          <div id="feedbackThanks" class="feedback-thanks card" hidden>
+            <div class="thanks-check">✓</div><h3>Thank you!</h3><p>Your feedback is saved on this device and ready for future backend integration.</p>
+            <button class="btn btn-primary full" data-go="map" type="button">Back to Beach Map</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="cancelModal" class="modal-backdrop" hidden>
+      <div class="cancel-modal card" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+        <div class="cancel-modal-icon">!</div>
+        <span class="section-kicker">CANCEL RESERVATION</span>
+        <h3 id="cancelModalTitle">Cancel this booking?</h3>
+        <p id="cancelModalCopy">Your locker will become available again. Cancellation and refund handling follow the beach operator policy.</p>
+        <div class="cancel-modal-booking" id="cancelModalBooking">Locker A</div>
+        <div class="cancel-modal-actions">
+          <button id="keepReservation" class="btn btn-ghost full" type="button">Keep Reservation</button>
+          <button id="confirmCancelReservation" class="btn btn-danger full" type="button">Yes, Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="https://unpkg.com/mqtt@5.15.2/dist/mqtt.min.js"></script>
+  <script src="pwa.js"></script>
+  <script src="app.js?v=accountsync24h-1"></script>
+</body>
+</html>
